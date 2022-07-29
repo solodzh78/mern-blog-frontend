@@ -11,6 +11,7 @@ import styles from './AddPost.module.scss';
 import { useAppSelector } from '../../store/store';
 import { selectIsAuth } from '../../store/slices/auth';
 import { PostType } from '../../store/slices/posts';
+import { BASE_URL } from '../../assets/constants';
 
 
 export const AddPost: FC = () => {
@@ -119,7 +120,7 @@ export const AddPost: FC = () => {
                 <Button variant="contained" color="error" onClick={onClickRemoveImage}>
                     Удалить
                 </Button>
-                <img className={styles.image} src={`http://localhost:4444/${imageUrl}`} alt="Uploaded" />
+                <img className={styles.image} src={`${BASE_URL}/${imageUrl}`} alt="Uploaded" />
             </>)}
             <br />
             <br />
