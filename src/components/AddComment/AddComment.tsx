@@ -17,6 +17,7 @@ export const AddComment: FC<{id: string; setPost: React.Dispatch<React.SetStateA
     const { 
         register, 
         handleSubmit, 
+        reset,
         setError, 
         formState: {errors, isValid}
     } = useForm({defaultValues: {commentText: ''}, mode: 'onChange'});
@@ -25,6 +26,7 @@ export const AddComment: FC<{id: string; setPost: React.Dispatch<React.SetStateA
         try {
             const { data } = await axios.patch<PostType>(`/posts/${id}/comment`, {commentText: values.commentText});
             setPost(data);
+            reset();
         } catch (error) {
             console.log(error);
         }
