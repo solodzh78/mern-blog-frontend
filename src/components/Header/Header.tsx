@@ -1,15 +1,21 @@
 import { FC } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
 
 import styles from './Header.module.scss';
-import Container from '@mui/material/Container';
 import { useAppDispatch, useAppSelector } from '../../store/store';
-import { logout, selectIsAuth } from '../../store/slices/auth';
+import { logout, selectAuth } from '../../store/slices/auth';
+import { BASE_URL } from '../../assets/constants';
 
 export const Header: FC = () => {
     const dispatch = useAppDispatch();
-    const isAuth = useAppSelector(selectIsAuth);
+    const user = useAppSelector(selectAuth);
+    const navigate = useNavigate();
+    const avatarUrl = user?.avatarUrl;
+    const fullName = user?.fullName;
+    const isAuth = !!user;
 
     const onClickLogout = () => {
         dispatch(logout());
@@ -26,12 +32,22 @@ export const Header: FC = () => {
                     <div className={styles.buttons}>
                         {isAuth ? (
                             <>
-                                <Link to={"/addpost"}>
-                                    <Button variant="contained">Написать статью</Button>
-                                </Link>
-                                <Button onClick={onClickLogout} variant="contained" color="error">
-                                    Выйти
-                                </Button>
+                                    <Button
+                                        onClick={() => navigate('/addpost')}
+                                        variant="contained">
+                                        Написать статью
+                                    </Button>
+                                <Avatar
+                                    className={styles.avatar}
+                                    src={`${BASE_URL}/${avatarUrl || ''}`}
+                                    alt={fullName || ''}
+                                />
+                                    <Button
+                                        onClick={onClickLogout}
+                                        variant="contained"
+                                        color="error">
+                                        Выйти
+                                    </Button>
                             </>
                         ) : (
                             <>
