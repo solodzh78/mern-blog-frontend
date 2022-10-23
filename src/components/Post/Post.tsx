@@ -1,26 +1,26 @@
-import React, { FC, PropsWithChildren, useCallback } from 'react';
+import { FC, PropsWithChildren, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import IconButton from '@mui/material/IconButton';
+import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import CommentIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 
 import styles from './Post.module.scss';
+
 import { UserInfo } from '../UserInfo';
 import { fetchRemovePost, PostType,  } from '../../store/slices/posts';
 import { BASE_URL } from '../../assets/constants';
 import { useAppDispatch } from '../../store/store';
-import axios from '../../axios';
 
-type PostPropsType =  {
+type PostPropsType =  Omit<PostType, 'comments'> & {
     isFullPost?: boolean;
     isLoading?: boolean;
     isEditable?: boolean;
 }
 
-export const Post: FC<PropsWithChildren<Omit<PostType, 'comments'> & PostPropsType>> = ({
+export const Post: FC< PropsWithChildren<PostPropsType>> = ({
     _id,
     title,
     createdAt,
@@ -31,15 +31,12 @@ export const Post: FC<PropsWithChildren<Omit<PostType, 'comments'> & PostPropsTy
     tags,
     children,
     isFullPost = false,
-    isLoading = false,
     isEditable = false,
 }) => {
     
     const dispatch = useAppDispatch();
 
-    const onClickRemove = useCallback(async() => {
-        dispatch(fetchRemovePost(_id));
-    }, []);
+    const onClickRemove = useCallback(async() => { dispatch(fetchRemovePost(_id)) }, []);
 
     return (
         <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>

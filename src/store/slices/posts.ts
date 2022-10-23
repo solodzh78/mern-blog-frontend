@@ -73,6 +73,7 @@ const initialState = {
 	},
 	tags: {
 		items: [] as string[],
+		checkedItems: [] as string[],
 		status: StatusEnum.LOADING
 	},
 	comments: {
@@ -84,7 +85,16 @@ const initialState = {
 export const postsSlice = createSlice({
     name: 'posts',
     initialState,
-    reducers: {},
+    reducers: {
+        addCheckedTags: (state, {payload}: {payload: string}) => {
+            let { checkedItems } = state.tags;
+            if (checkedItems.includes(payload)) {
+                state.tags.checkedItems = checkedItems.filter(item => item!==payload);
+                return
+            }
+            checkedItems.push(payload);
+        }
+    },
 	extraReducers: (builder) => {
         builder
         // Получение статей
@@ -138,4 +148,5 @@ export const postsSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
+export const { addCheckedTags } = postsSlice.actions;
 export default postsSlice.reducer;

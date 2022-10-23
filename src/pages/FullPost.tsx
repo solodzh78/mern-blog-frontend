@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 import { Post } from "../components/Post";
 import { AddComment } from "../components/AddComment";
@@ -7,7 +8,6 @@ import { CommentsBlock } from "../components/CommentsBlock";
 import axios from "../axios";
 import { PostType } from "../store/slices/posts";
 import { PostSkeleton } from "../components/Post/Skeleton";
-import ReactMarkdown from "react-markdown";
 import { useAppSelector } from "../store/store";
 import { selectIsAuth } from "../store/slices/auth";
 
@@ -20,12 +20,15 @@ export const FullPost: FC = () => {
 
 
     useEffect(() => {
-        setIsLoading(true);
-        axios.get<PostType>(`posts/${id}`)
-            .then(res => {
+        const tempAsyncFunc = async() => {
+            try {
+                setIsLoading(true);
+                const res = await axios.get<PostType>(`posts/${id}`);
                 setPost(res.data);
                 setIsLoading(false);
-            });
+            } catch (error) { console.log(error) }
+        }
+        tempAsyncFunc();
     }, []);
 
     return (
@@ -48,30 +51,9 @@ export const FullPost: FC = () => {
                     <ReactMarkdown children={post.text ? post.text : ''}/>
                 </Post>
             }
-            <CommentsBlock
-                items={post.comments}
-                isLoading={isLoading}
-                onClickCommentHandler={() => {}}
-            >
+            <CommentsBlock isLoadingPost={isLoading} postComments={post.comments}>
                 {isAuth && <AddComment id={post._id} setPost={setPost}/>}
             </CommentsBlock>
         </>
     );
 };
-
-// [
-//     {
-//         user: {
-//             fullName: "Вася Пупкин",
-//             avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-//         },
-//         text: "Это тестовый комментарий",
-//     },
-//     {
-//         user: {
-//             fullName: "Иван Иванов",
-//             avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-//         },
-//         text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-//     },
-// ]

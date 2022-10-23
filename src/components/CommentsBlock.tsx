@@ -1,24 +1,22 @@
 import React, { FC, PropsWithChildren } from "react";
+import { Link } from "react-router-dom";
+import { Avatar, Divider, List, ListItem, ListItemText, 
+    ListItemAvatar, Skeleton, Box } from "@mui/material";
 
 import { SideBlock } from "./SideBlock";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import Skeleton from "@mui/material/Skeleton";
-import { CommentType } from "../store/slices/posts";
+import { CommentType, StatusEnum } from "../store/slices/posts";
 import { BASE_URL } from "../assets/constants";
-import { Link } from "react-router-dom";
+import { useAppSelector } from "../store/store";
 
-interface CommentsBlockPropsType extends PropsWithChildren {
-    items: CommentType[];
-    isLoading: Boolean;
-    onClickCommentHandler: (_id: string) => void;
-};
+interface CommentsBlockType extends PropsWithChildren {
+    postComments?: CommentType[];
+    isLoadingPost?: boolean;
+}
 
-export const CommentsBlock: FC<CommentsBlockPropsType> = ({ items, children, isLoading, onClickCommentHandler }) => {
+export const CommentsBlock: FC<CommentsBlockType> = ({ children, postComments, isLoadingPost }) => {
+    const { items, status } = useAppSelector((state) => state.posts.comments);
+    const comments = postComments ? postComments : items;
+    const isLoading = (isLoadingPost === undefined) ? isLoadingPost : status === StatusEnum.LOADING;
 
     return (
         <SideBlock title="Комментарии">
@@ -30,20 +28,20 @@ export const CommentsBlock: FC<CommentsBlockPropsType> = ({ items, children, isL
                                 <ListItemAvatar>
                                     <Skeleton variant="circular" width={40} height={40} />
                                 </ListItemAvatar>
-                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                <Box sx={{ display: "flex", flexDirection: "column" }}>
                                     <Skeleton variant="text" height={25} width={120} />
                                     <Skeleton variant="text" height={18} width={230} />
-                                </div>
+                                </Box>
                             </ListItem>
                             <Divider variant="inset" component="li" />
                         </React.Fragment>
                     ))
-                    : items.map(({ commentText, post, user: { fullName, avatarUrl }}, index) => {
+                    : comments.map(({ commentText, post, user: { fullName, avatarUrl }}, index) => {
 
                         return (
                         <React.Fragment key={index}>
                             <Link to={`/posts/${post}`} style={{textDecoration: 'none'}}>
-                                <ListItem alignItems="flex-start" onClick={onClickCommentHandler.bind(null, post)}>
+                                <ListItem alignItems="flex-start">
                                     <ListItemAvatar>
                                         <Avatar alt={fullName} src={`${BASE_URL}/${avatarUrl}`} />
                                     </ListItemAvatar>
@@ -53,7 +51,6 @@ export const CommentsBlock: FC<CommentsBlockPropsType> = ({ items, children, isL
                                         />
                                 </ListItem>
                             </Link>
-                            <Divider variant="inset" component="li" />
                         </React.Fragment>
                     )})
                 }

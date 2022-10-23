@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import Avatar from '@mui/material/Avatar';
+import { Avatar } from '@mui/material';
 import { fileLoader } from '../../utils/fileLoader';
 import noAvatar from '../../assets/image/noavatar.svg';
 

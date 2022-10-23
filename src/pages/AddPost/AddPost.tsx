@@ -4,10 +4,11 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import SimpleMDE from 'react-simplemde-editor';
-import axios from "../../axios";
 
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
+
+import axios from "../../axios";
 import { useAppSelector } from '../../store/store';
 import { selectIsAuth } from '../../store/slices/auth';
 import { PostType } from '../../store/slices/posts';
@@ -108,11 +109,7 @@ export const AddPost: FC = () => {
 
     return (
         <Paper style={{ padding: 30 }}>
-            <Button 
-                variant="outlined" 
-                size="large"
-                onClick={onClickLoadButton}
-            >
+            <Button variant="outlined" onClick={onClickLoadButton}>
                 Загрузить превью
             </Button>
             <input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden />
