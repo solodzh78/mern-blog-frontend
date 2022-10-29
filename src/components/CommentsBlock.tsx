@@ -40,7 +40,7 @@ export const CommentsBlock: FC<CommentsBlockType> = ({ children, postComments, i
                             <Link key={index} to={`/posts/${post}`} style={{textDecoration: 'none'}}>
                                 <ListItem alignItems="flex-start">
                                     <ListItemAvatar>
-                                        <Avatar alt={fullName} src={`${BASE_URL}/${avatarUrl}`} />
+                                        <Avatar alt={fullName} src={avatarUrl ? `${BASE_URL}/${avatarUrl}` : ''} />
                                     </ListItemAvatar>
                                         <ListItemText
                                             primary={fullName}

@@ -35,7 +35,7 @@ export const AddComment: FC<{id: string; setPost: React.Dispatch<React.SetStateA
             <div className={styles.root}>
                 <Avatar
                     classes={{ root: styles.avatar }}
-                    src={`${BASE_URL}/${avatarUrl}`}
+                    src={avatarUrl ? `${BASE_URL}/${avatarUrl}` : ''}
                     alt={fullName}
                 />
                 <form onSubmit={handleSubmit(sendComment)} className={styles.form}>

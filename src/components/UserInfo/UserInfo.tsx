@@ -15,7 +15,7 @@ export const UserInfo: FC<UserInfoPropsType> = ({ avatarUrl, fullName, additiona
   const date = new Date(additionalText).toLocaleString();
   return (
     <div className={styles.root}>
-      <Avatar className={styles.avatar} src={`${BASE_URL}/${avatarUrl}`} alt={fullName} />
+      <Avatar className={styles.avatar} src={avatarUrl ? `${BASE_URL}/${avatarUrl}` : ''} alt={fullName} />
       <div className={styles.userDetails}>
         <span className={styles.userName}>{fullName}</span>
         <span className={styles.additional}>{`Опубликована: ${date}`}</span>
