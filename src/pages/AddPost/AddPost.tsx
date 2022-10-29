@@ -8,7 +8,7 @@ import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 
-import axios from "../../axios";
+import {instance} from "../../instance";
 import { useAppSelector } from '../../store/store';
 import { selectIsAuth } from '../../store/slices/auth';
 import { PostType } from '../../store/slices/posts';
@@ -27,14 +27,14 @@ export const AddPost: FC = () => {
 
     useEffect(() => {
         if (id) {
-        axios.get<PostType>(`/posts/${id}`)
-            .then(({data}) => {
-                setImageUrl(data.imageUrl);
-                setText(data.text ? data.text : '');
-                setTitle(data.title);
-                setTags(data.tags.join(', '));
-            })
-            .catch(err => console.log(err));
+            instance.get<PostType>(`/posts/${id}`)
+                .then(({ data }) => {
+                    setImageUrl(data.imageUrl);
+                    setText(data.text ? data.text : '');
+                    setTitle(data.title);
+                    setTags(data.tags.join(', '));
+                })
+                .catch(err => console.log(err));
         }
     
     }, []);
@@ -44,7 +44,7 @@ export const AddPost: FC = () => {
             const files = event.target.files;
             const formdata = new FormData();
             if (files?.[0]) formdata.append('image', files[0]);
-            const { data } = await axios.post('/upload', formdata);
+            const { data } = await instance.post('/upload', formdata);
             setImageUrl(data.url);
         } catch (error) {
             console.log(error);
@@ -59,10 +59,10 @@ export const AddPost: FC = () => {
                 imageUrl, 
                 text }
             if (id) {
-                const { data } = await axios.patch(`/posts/${id}`, article);
+                const { data } = await instance.patch(`/posts/${id}`, article);
                 navigate(`/posts/${id}`);
             } else {
-                const { data } = await axios.post('/posts', article);
+                const { data } = await instance.post('/posts', article);
                 navigate(`/posts/${data._id}`);
             }
         } catch (error) {

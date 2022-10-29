@@ -16,7 +16,7 @@ interface CommentsBlockType extends PropsWithChildren {
 export const CommentsBlock: FC<CommentsBlockType> = ({ children, postComments, isLoadingPost }) => {
     const { items, status } = useAppSelector((state) => state.posts.comments);
     const comments = postComments ? postComments : items;
-    const isLoading = (isLoadingPost === undefined) ? isLoadingPost : status === StatusEnum.LOADING;
+    const isLoading = (isLoadingPost !== undefined) ? isLoadingPost : status === StatusEnum.LOADING;
 
     return (
         <SideBlock title="Комментарии">
@@ -36,11 +36,8 @@ export const CommentsBlock: FC<CommentsBlockType> = ({ children, postComments, i
                             <Divider variant="inset" component="li" />
                         </React.Fragment>
                     ))
-                    : comments.map(({ commentText, post, user: { fullName, avatarUrl }}, index) => {
-
-                        return (
-                        <React.Fragment key={index}>
-                            <Link to={`/posts/${post}`} style={{textDecoration: 'none'}}>
+                    : comments.map(({ commentText, post, user: { fullName, avatarUrl }}, index) => 
+                            <Link key={index} to={`/posts/${post}`} style={{textDecoration: 'none'}}>
                                 <ListItem alignItems="flex-start">
                                     <ListItemAvatar>
                                         <Avatar alt={fullName} src={`${BASE_URL}/${avatarUrl}`} />
@@ -51,8 +48,7 @@ export const CommentsBlock: FC<CommentsBlockType> = ({ children, postComments, i
                                         />
                                 </ListItem>
                             </Link>
-                        </React.Fragment>
-                    )})
+                        )
                 }
             </List>
             {children}

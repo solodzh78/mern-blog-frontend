@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { Post } from "../components/Post";
 import { AddComment } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
-import axios from "../axios";
+import {instance} from "../instance";
 import { PostType } from "../store/slices/posts";
 import { PostSkeleton } from "../components/Post/Skeleton";
 import { useAppSelector } from "../store/store";
@@ -23,7 +23,7 @@ export const FullPost: FC = () => {
         const tempAsyncFunc = async() => {
             try {
                 setIsLoading(true);
-                const res = await axios.get<PostType>(`posts/${id}`);
+                const res = await instance.get<PostType>(`posts/${id}`);
                 setPost(res.data);
                 setIsLoading(false);
             } catch (error) { console.log(error) }

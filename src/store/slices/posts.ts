@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import axios from '../../axios';
+import {instance} from '../../instance';
 
 export type UserType = {
     _id: string;
@@ -36,7 +36,7 @@ export enum StatusEnum {
 export const fetchPosts = createAsyncThunk(
     "posts/fetchPosts",
     async (searchParams: string) => {
-		const { data } = await axios.get<PostType[]>(`/posts${searchParams}`);
+		const { data } = await instance.get<PostType[]>(`/posts${searchParams}`);
 		return data;
 	}
 );
@@ -44,7 +44,7 @@ export const fetchPosts = createAsyncThunk(
 export const fetchTags = createAsyncThunk(
     "posts/fetchTags",
     async (searchParams: string) => {
-		const { data } = await axios.get<string[]>(`/tags${searchParams}`);
+		const { data } = await instance.get<string[]>(`/tags${searchParams}`);
 		return data;
 	}
 );
@@ -52,7 +52,7 @@ export const fetchTags = createAsyncThunk(
 export const fetchComments = createAsyncThunk(
     "posts/fetchComments",
     async (searchParams: string) => {
-		const { data } = await axios.get<CommentType[]>(`/comments${searchParams}`);
+		const { data } = await instance.get<CommentType[]>(`/comments${searchParams}`);
 		return data;
 	}
 );
@@ -61,7 +61,7 @@ export const fetchComments = createAsyncThunk(
 
 export const fetchRemovePost = createAsyncThunk(
     "posts/fetchRemovePost", async (id: string) => {
-        await axios.delete(`/posts/${id}`);
+        await instance.delete(`/posts/${id}`);
         return id;
     }
 );

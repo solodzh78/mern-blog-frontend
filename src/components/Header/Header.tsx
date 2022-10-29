@@ -1,12 +1,11 @@
 import { FC, useState } from 'react';
-import { Box, Button, Container, Divider, Drawer, IconButton, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Box, Button, Container, Divider, Drawer, IconButton, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import ImageIcon from "@mui/icons-material/Image";
 
 import { useAppDispatch, useAppSelector } from '../../store/store';
-import { logout, selectAuth, selectIsAuth } from '../../store/slices/auth';
+import { fetchLogOut, selectAuth } from '../../store/slices/auth';
 import { TagsBlock } from '../TagsBlock';
 import { CommentsBlock } from '../CommentsBlock';
 
@@ -22,8 +21,7 @@ export const Header: FC = () => {
     const isAuth = !!user;
 
     const onClickLogout = () => {
-        dispatch(logout());
-        localStorage.removeItem('token');
+        dispatch(fetchLogOut());
     };
 
     return (

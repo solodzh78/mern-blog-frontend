@@ -1,15 +1,13 @@
 import React, { FC } from "react";
+import {TextField, Avatar, Button} from "@mui/material";
+import { useForm } from "react-hook-form";
 
 import styles from "./AddComment.module.scss";
 
-import TextField from "@mui/material/TextField";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import { useForm } from "react-hook-form";
 import { useAppSelector } from "../../store/store";
 import { PostType } from "../../store/slices/posts";
 import { BASE_URL } from "../../assets/constants";
-import axios from "../../axios";
+import {instance} from "../../instance";
 
 export const AddComment: FC<{id: string; setPost: React.Dispatch<React.SetStateAction<PostType>>}> = ({ id, setPost }) => {
     const avatarUrl = useAppSelector(state => state.auth.data?.avatarUrl);
@@ -24,7 +22,7 @@ export const AddComment: FC<{id: string; setPost: React.Dispatch<React.SetStateA
 
     const sendComment = async (values: { commentText: string; }) => {
         try {
-            const { data } = await axios.patch<PostType>(`/posts/${id}/comment`, {commentText: values.commentText});
+            const { data } = await instance.patch<PostType>(`/posts/${id}/comment`, {commentText: values.commentText});
             setPost(data);
             reset();
         } catch (error) {

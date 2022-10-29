@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from '../../axios';
+import { instance } from '../../instance';
 import { RootState } from '../store';
 import { StatusEnum } from './posts';
 
@@ -24,15 +24,22 @@ export type AuthUserDataType = {
 export const fetchAuth = createAsyncThunk(
     "auth/fetchAuth",
     async (params: AuthValuesType) => {
-		const { data } = await axios.post<AuthUserDataType>('/auth/login', params);
+		const { data } = await instance.post<AuthUserDataType>('/auth/login', params);
 		return data;
+	}
+);
+
+export const fetchLogOut = createAsyncThunk(
+    "auth/fetchLogOut",
+    async () => {
+		await instance.get('/auth/logout');
 	}
 );
 
 export const fetchAuthMe = createAsyncThunk(
     "auth/fetchAuthMe",
     async () => {
-		const { data } = await axios.get<AuthUserDataType>('/auth/me');
+		const { data } = await instance.get<AuthUserDataType>('/auth/me');
 		return data;
 	}
 );
@@ -48,7 +55,7 @@ export const fetchRegister = createAsyncThunk(
         formData.append('password', password);
         console.log('formData: ', formData);
 
-		const { data } = await axios.post<AuthUserDataType>('/auth/register', formData, {
+		const { data } = await instance.post<AuthUserDataType>('/auth/register', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -65,13 +72,10 @@ const initialState = {
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers: {
-        logout: state => {
-            state.data = null;
-        }
-    },
+    reducers: {},
 	extraReducers: (builder) => {
         builder
+        // Логин
             .addCase(fetchAuth.pending, (state) => {
 				state.data = null;
                 state.status = StatusEnum.LOADING;
@@ -84,6 +88,7 @@ export const authSlice = createSlice({
                 state.data = null;
                 state.status = StatusEnum.ERROR;
             })
+        // Аутентификация через куки
             .addCase(fetchAuthMe.pending, (state) => {
 				state.data = null;
                 state.status = StatusEnum.LOADING;
@@ -96,6 +101,7 @@ export const authSlice = createSlice({
                 state.data = null;
                 state.status = StatusEnum.ERROR;
             })
+        // Регистрация
             .addCase(fetchRegister.pending, (state) => {
 				state.data = null;
                 state.status = StatusEnum.LOADING;
@@ -108,12 +114,15 @@ export const authSlice = createSlice({
                 state.data = null;
                 state.status = StatusEnum.ERROR;
             })
+        // Выход из аккаунта
+            .addCase(fetchLogOut.fulfilled, (state) => {
+                state.data = null;
+                state.status = StatusEnum.SUCCESS;
+            })
     },
 });
 
 export const selectAuth = (state: RootState) => state.auth.data;
 export const selectIsAuth = (state: RootState) => Boolean(state.auth.data);
-
-export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;
