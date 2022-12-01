@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
-import { Box, Button, Container, Divider, Drawer, IconButton, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, Button, Container, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Typography } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -15,14 +15,25 @@ export const Header: FC = () => {
 
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectAuth);
-    // const navigate = useNavigate();
-    // const avatarUrl = user?.avatarUrl;
-    // const fullName = user?.fullName;
+    const navigate = useNavigate();
     const isAuth = !!user;
 
-    const onClickLogout = () => {
-        dispatch(fetchLogOut());
-    };
+    const onClickMenuButton = (path: string) => {
+        setDrawerState(false);
+        if (path === 'logout') {
+            dispatch(fetchLogOut());
+            return;
+        } 
+        navigate(path);
+    }
+
+    const MobieleMenuButton: FC<{path: string, title: string}> = ({path, title}) => (
+        <ListItem disablePadding>
+            <ListItemButton onClick={() => onClickMenuButton(path)}>
+                <ListItemText primary={title} />
+            </ListItemButton>
+        </ListItem>
+    )
 
     return (
         <Box 
@@ -73,40 +84,37 @@ export const Header: FC = () => {
                 </IconButton>
 
                 <Drawer
-                    //from which side the drawer slides in
                     anchor="right"
-                    //if open is true --> drawer is shown
                     open={drawerState}
-                    //function that is called when the drawer should close
                     onClose={() => setDrawerState(false)}
-                    //function that is called when the drawer should open
-                    // onOpen={() => setDrawerState(true)}
                 >
                     <Box
                         sx={{
                             width: {xs: '80vw', sm: '50vw'},
                             p: 2,
-                            height: 1,
-                            backgroundColor: "white"
                         }}
                     >
                         <IconButton sx={{ mb: 2 }} onClick={() => setDrawerState(false)}>
                             <CloseIcon />
                         </IconButton>
+
                         <Divider sx={{ mb: 2 }} />
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <Button variant="contained" sx={{ m: 1, width: 0.5 }}>
-                                Register
-                            </Button>
-                            <Button variant="outlined" sx={{ m: 1, width: 0.5 }}>
-                                Login
-                            </Button>
-                        </Box>
+
+                        <Paper sx={{mb:2}}>
+                            <List sx={{width: '100%'}}>
+                                {isAuth
+                                    ? <>
+                                        <MobieleMenuButton title='Написать статью' path='/addpost'/>
+                                        <MobieleMenuButton title='Выйти' path='logout'/>
+                                    </>
+                                    : <>
+                                        <MobieleMenuButton title='Войти' path='/login'/>
+                                        <MobieleMenuButton title='Создать аккаунт' path='/register'/>
+                                    </>
+                                }                            
+                            </List>
+                        </Paper>
+
                         <Box sx={{ mb: 2 }}>
                             <TagsBlock />
                             <CommentsBlock />
@@ -121,7 +129,7 @@ export const Header: FC = () => {
                             <Link to={"/addpost"}>
                                 <Button variant="contained">Написать статью</Button>
                             </Link>
-                            <Button onClick={onClickLogout} variant="contained" color="error" sx={{ ml: '10px' }}>
+                            <Button onClick={() => onClickMenuButton('logout')} variant="contained" color="error" sx={{ ml: '10px' }}>
                                 Выйти
                             </Button>
                         </>

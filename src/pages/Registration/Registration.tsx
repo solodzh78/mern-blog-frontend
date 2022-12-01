@@ -1,21 +1,19 @@
-import { FC, useRef, useEffect } from 'react';
+import { FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
 
 import styles from './Login.module.scss';
 
 import { useAppDispatch, useAppSelector } from '../../store/store';
-import { AuthUserDataType, fetchRegister, RegisterValuesType, selectIsAuth } from '../../store/slices/auth';
+import { fetchRegister, RegisterValuesType, selectIsAuth } from '../../store/slices/auth';
 import { FileInput } from '../../components/ui/FileInput';
 
 export const Registration: FC = () => {
 
-    // const inputFileRef = useRef(null);
     const isAuth = useAppSelector(selectIsAuth);
     const dispatch = useAppDispatch();
     const {
@@ -34,28 +32,10 @@ export const Registration: FC = () => {
         mode: 'onChange'
     });
 
-    // useEffect(() => {
-    //     if (isSubmitSuccessful) {
-    //         reset({
-    //             image: [],
-    //             fullName: '',
-    //             email: '',
-    //             password: ''
-    //         });
-    //     }
-    // }, [isSubmitSuccessful, reset]);
-
     if (isAuth) return <Navigate to='/'/>;
 
-
     const onSubmit = async (values: RegisterValuesType) => {
-        console.log('values: ', values);
-
-        const data = await dispatch(fetchRegister(values));
-        const payload = data.payload as AuthUserDataType;
-        if (payload && 'token' in payload) {
-            localStorage.setItem('token', payload.token);
-        }
+        await dispatch(fetchRegister(values));
     };
 
     return (
@@ -90,7 +70,8 @@ export const Registration: FC = () => {
                 />
                 <TextField 
                     className={styles.field} 
-                    label="Пароль" 
+                    label='Пароль'
+                    type='password'
                     fullWidth
                     error={Boolean(errors.password?.message)}
                     helperText={errors.password?.message}
